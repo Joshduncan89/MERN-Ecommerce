@@ -5,3 +5,8 @@ main {
 .rating span {
   margin: 0.1rem;
 }
+
+select.form-control {
+  margin: 0.75rem;
+  padding: 0.5rem;
+}
