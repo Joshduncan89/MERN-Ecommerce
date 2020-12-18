@@ -18,7 +18,6 @@ const orderSchema = mongoose.Schema(
           required: true,
           ref: "Product",
         },
-        name: { type: String, required: true },
       },
     ],
     shippingAddress: {
@@ -32,10 +31,6 @@ const orderSchema = mongoose.Schema(
       required: true,
     },
     paymentResult: {
-      type: String,
-      required: true,
-    },
-    paymentMethod: {
       id: { type: String },
       status: { type: String },
       update_time: { type: String },

@@ -1,29 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Col, Row, ListGroup, Image, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/FormContainer";
 import CheckoutSteps from "../components/CheckoutSteps";
+import { addOrder } from "../actions/orderActions";
 
-const PlaceOrderScreen = () => {
+const PlaceOrderScreen = ({ history }) => {
   const cart = useSelector((state) => state.cart);
 
-  cart.itemsPrice = cart.cartItems.reduce((acc, item) => {
-    return acc + item.price * item.qty;
-  }, 0);
+  const orderCreate = useSelector((state) => state.orderCreate);
+  const { success, order, error } = orderCreate;
 
-  cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 10;
+  const dispatch = useDispatch();
 
-  cart.taxPrice = +(0.12 * cart.itemsPrice).toFixed(2);
+  const addDecimals = (num) => {
+    return (Math.round(num * 100) / 100).toFixed(2);
+  };
 
-  cart.totalPrice = +(
-    cart.taxPrice +
-    cart.itemsPrice +
-    cart.shippingPrice
+  cart.itemsPrice = addDecimals(
+    cart.cartItems.reduce((acc, item) => {
+      return acc + item.price * item.qty;
+    }, 0)
+  );
+
+  cart.shippingPrice = addDecimals(cart.itemsPrice > 100 ? 0 : 10);
+
+  cart.taxPrice = addDecimals(Number((0.12 * cart.itemsPrice).toFixed(2)));
+
+  cart.totalPrice = (
+    Number(cart.taxPrice) +
+    Number(cart.itemsPrice) +
+    Number(cart.shippingPrice)
   ).toFixed(2);
 
+  useEffect(() => {
+    if (success) {
+      history.push(`/order/${order._id}`);
+    }
+  }, [success, history, order]);
+
   const placeOrderHandler = () => {
-    console.log("place order");
+    dispatch(
+      addOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        taxPrice: cart.taxPrice,
+        shippingPrice: cart.shippingPrice,
+        totalPrice: cart.totalPrice,
+      })
+    );
   };
 
   return (
@@ -113,6 +141,9 @@ const PlaceOrderScreen = () => {
                   <Col>Total</Col>
                   <Col>${cart.totalPrice}</Col>
                 </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                {error && <Message variant='danger'>{error}</Message>}
               </ListGroup.Item>
               <ListGroup.Item>
                 <Button
