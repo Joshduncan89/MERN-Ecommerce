@@ -12,8 +12,10 @@ import {
   USER_UPDATE_SUCCESS,
   USER_UPDATE_REQUEST,
   USER_UPDATE_FAIL,
+  USER_DETAILS_RESET,
 } from "../constants/userConstants.js";
 import axios from "axios";
+import { ORDER_LIST_RESET } from "../constants/orderConstants.js";
 
 export const loginUser = (email, password) => async (dispatch) => {
   try {
@@ -138,4 +140,6 @@ export const updateUserDetails = (user) => async (dispatch, getState) => {
 export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
   dispatch({ type: USER_LOGOUT });
+  dispatch({ type: USER_DETAILS_RESET });
+  dispatch({ type: ORDER_LIST_RESET });
 };
