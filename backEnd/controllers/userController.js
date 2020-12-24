@@ -61,10 +61,17 @@ const getUserProfile = asyncHandler(async (req, res) => {
       email: user.email,
       isAdmin: user.isAdmin,
     });
+    console.log(req.headers);
   } else {
     res.status(401);
     throw new Error("User not found");
   }
+});
+
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+
+  res.json(users);
 });
 
 const updateUserProfile = asyncHandler(async (req, res) => {
@@ -91,4 +98,4 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, getUserProfile, registerUser, updateUserProfile };
+export { authUser, getUserProfile, registerUser, updateUserProfile, getUsers };
