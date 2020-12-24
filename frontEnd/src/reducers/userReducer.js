@@ -184,7 +184,7 @@ export const EditUserReducer = (state = { user: {} }, action) => {
         error: action.payload,
       };
     case USER_EDIT_RESET:
-      return {};
+      return { user: {} };
     default:
       return state;
   }

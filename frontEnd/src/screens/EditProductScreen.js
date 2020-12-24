@@ -5,55 +5,79 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
-import { getUserDetails, updateUser } from "../actions/userActions";
-import { USER_EDIT_RESET } from "../constants/userConstants";
+import { listProductDetails, updateProduct } from "../actions/productActions";
+import { PRODUCT_UPDATE_RESET } from "../constants/productContants";
 
-const UserEditScreen = ({ location, history, match }) => {
-  const userId = match.params.id;
+const ProductEditScreen = ({ history, match }) => {
+  const productId = match.params.id;
 
-  const [email, setEmail] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
   const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [image, setImage] = useState("");
+  const [description, setDescription] = useState("");
+  const [brand, setBrand] = useState("");
+  const [countInStock, setCountInStock] = useState(0);
+  const [category, setCategory] = useState("");
 
   const dispatch = useDispatch();
 
-  const userDetails = useSelector((state) => state.userDetails);
-  const { loading, error, user } = userDetails;
+  const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
 
-  const userEdit = useSelector((state) => state.userEdit);
+  const productUpdate = useSelector((state) => state.productUpdate);
   const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = userEdit;
+    loading: updateLoading,
+    error: updateError,
+    success: updateSuccess,
+  } = productUpdate;
 
   useEffect(() => {
-    if (successUpdate) {
-      dispatch({ type: USER_EDIT_RESET });
-      history.push("/admin/userlist");
+    if (updateSuccess) {
+      dispatch({ type: PRODUCT_UPDATE_RESET });
+      history.push("/admin/productlist");
     } else {
-      if (!user.name || user._id !== userId) {
-        dispatch(getUserDetails(userId));
+      if (!product.name || product._id !== productId) {
+        dispatch(listProductDetails(productId));
       } else {
-        setName(user.name);
-        setEmail(user.email);
-        setIsAdmin(user.isAdmin);
+        setName(product.name);
+        setPrice(product.price);
+        setDescription(product.description);
+        setBrand(product.brand);
+        setCountInStock(product.countInStock);
+        setCategory(product.category);
+        setImage(product.image);
       }
     }
-  }, [dispatch, user, userId, successUpdate, history]);
+  }, [dispatch, productId, product, history, updateSuccess]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(updateUser({ _id: userId, name, email, isAdmin }));
+
+    dispatch(
+      updateProduct({
+        _id: productId,
+        name,
+        price,
+        countInStock,
+        brand,
+        category,
+        image,
+        description,
+      })
+    );
   };
 
   return (
     <>
-      <Link to={"/admin/userlist"}>Go Back</Link>
+      <Link to={"/admin/productlist"}>
+        <Button type='button' className='btn btn-primary'>
+          Go Back
+        </Button>
+      </Link>
       <FormContainer>
-        <h1>Edit User</h1>
-        {loadingUpdate && <Loader />}
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+        <h1>Edit Product</h1>
+        {updateLoading && <Loader />}
+        {updateError && <Message variant='danger'>{updateError}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
@@ -69,23 +93,67 @@ const UserEditScreen = ({ location, history, match }) => {
                 onChange={(e) => setName(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Form.Group controlId='email'>
-              <Form.Label>Email</Form.Label>
+
+            <Form.Group controlId='price'>
+              <Form.Label>Price</Form.Label>
               <Form.Control
-                type='email'
-                placeholder='Email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type='number'
+                placeholder='price'
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Form.Group>
-              <Form.Check
-                type='checkbox'
-                label='Is Admin'
-                checked={isAdmin}
-                onChange={(e) => setIsAdmin(e.target.checked)}
-              ></Form.Check>
+
+            <Form.Group controlId='image'>
+              <Form.Label>Image</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Image URL'
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+              ></Form.Control>
             </Form.Group>
+
+            <Form.Group controlId='brand'>
+              <Form.Label>Brand</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter Brand'
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='countInStock'>
+              <Form.Label>Count in stock</Form.Label>
+              <Form.Control
+                type='number'
+                placeholder='Count in stock'
+                value={countInStock}
+                onChange={(e) => setCountInStock(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='category'>
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter category'
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId='description'>
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter description'
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
             <Button type='submit' variant='primary'>
               Update
             </Button>
@@ -96,4 +164,4 @@ const UserEditScreen = ({ location, history, match }) => {
   );
 };
 
-export default UserEditScreen;
+export default ProductEditScreen;
