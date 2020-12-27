@@ -1,6 +1,6 @@
 import express from "express";
-import path from "path";
 import multer from "multer";
+import path from "path";
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -15,17 +15,17 @@ const storage = multer.diskStorage({
   },
 });
 
-const checkFileType = (file, cb) => {
-  const fileTypes = /jpg|peg|peg/;
-  const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimeType = fileTypes.test(file.mimetype);
+function checkFileType(file, cb) {
+  const fileType = /jpg|jpeg|png/;
+  const extName = fileType.test(path.extname(file.originalname).toLowerCase());
+  const mimeType = fileType.test(file.mimetype);
 
   if (extName && mimeType) {
     return cb(null, true);
   } else {
-    cb("Images Only");
+    cb("Filetype not supported");
   }
-};
+}
 
 const upload = multer({
   storage,

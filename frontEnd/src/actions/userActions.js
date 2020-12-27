@@ -25,7 +25,10 @@ import {
   USER_EDIT_SUCCESS,
 } from "../constants/userConstants.js";
 import axios from "axios";
-import { ORDER_LIST_RESET } from "../constants/orderConstants.js";
+import {
+  ORDER_LIST_RESET,
+  ORDER_ADMINLIST_RESET,
+} from "../constants/orderConstants.js";
 
 export const loginUser = (email, password) => async (dispatch) => {
   try {
@@ -242,5 +245,6 @@ export const logout = () => (dispatch) => {
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: ORDER_LIST_RESET });
   dispatch({ type: USER_LIST_RESET });
+  dispatch({ type: ORDER_ADMINLIST_RESET });
   document.location.href = "/login";
 };
