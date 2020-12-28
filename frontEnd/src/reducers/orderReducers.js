@@ -18,6 +18,10 @@ import {
   ORDER_ADMINLIST_SUCCESS,
   ORDER_ADMINLIST_REQUEST,
   ORDER_ADMINLIST_RESET,
+  ORDER_DELIVERED_FAIL,
+  ORDER_DELIVERED_SUCCESS,
+  ORDER_DELIVERED_REQUEST,
+  ORDER_DELIVERED_RESET,
 } from "../constants/orderConstants";
 
 export const OrderCreateReducer = (state = {}, action) => {
@@ -138,6 +142,29 @@ export const GetAllOrdersReducer = (state = { orders: [] }, action) => {
       return {
         orders: [],
       };
+    default:
+      return state;
+  }
+};
+
+export const OrderDeliveredReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_DELIVERED_REQUEST:
+      return {
+        loading: true,
+      };
+    case ORDER_DELIVERED_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+    case ORDER_DELIVERED_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case ORDER_DELIVERED_RESET:
+      return {};
     default:
       return state;
   }
