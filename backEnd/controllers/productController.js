@@ -96,6 +96,7 @@ const createProductReview = asyncHandler(async (req, res) => {
       comment,
       user: req.user._id,
     };
+
     product.reviews.push(review);
 
     product.numReviews = product.reviews.length;
