@@ -2,6 +2,9 @@ import asyncHandler from "express-async-handler";
 import Product from "../models/productModel.js";
 
 const getProducts = asyncHandler(async (req, res) => {
+  const productsPerPage = 2;
+  const page = Number(req.query.pageNumber) || 1;
+
   const keyword = req.query.keyword
     ? {
         name: {
@@ -11,8 +14,12 @@ const getProducts = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const products = await Product.find({ ...keyword });
-  res.json(products);
+  const count = await Product.count({ ...keyword });
+  const products = await Product.find({ ...keyword })
+    .limit(productsPerPage)
+    .skip(productsPerPage * (page - 1));
+
+  res.json({ page, products, pages: Math.ceil(count / productsPerPage) });
 });
 
 const getProductById = asyncHandler(async (req, res) => {

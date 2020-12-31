@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import { withRouter } from "react-router-dom";
 
 const SearchBox = ({ history }) => {
   const [keyword, setKeyword] = useState("");
@@ -10,25 +11,25 @@ const SearchBox = ({ history }) => {
     if (keyword.trim()) {
       history.push(`/search/${keyword}`);
     } else {
-      history.push("/search");
+      history.push("/");
     }
   };
 
   return (
-    <Form onSubmit={submitHandler} inline>
+    <Form inline onSubmit={submitHandler}>
       <Form.Control
-        className='mr-sm-2 ml-sm-5'
-        name='q'
-        placeholder='Search'
         type='text'
-        value={keyword}
+        className='mr-sm-2 ml-sm-5'
+        placeholder='Enter Product...'
         onChange={(e) => setKeyword(e.target.value)}
-      ></Form.Control>
-      <Button type='submit' variant='outline-success' className='p-2'>
+        name='q'
+        value={keyword}
+      />
+      <Button variant='outline-success' type='submit'>
         Search
       </Button>
     </Form>
   );
 };
 
-export default SearchBox;
+export default withRouter(SearchBox);
