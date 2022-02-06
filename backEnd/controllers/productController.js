@@ -1,7 +1,6 @@
-import asyncHandler from "express-async-handler";
 import Product from "../models/productModel.js";
 
-const getProducts = asyncHandler(async (req, res) => {
+const getProducts = (req, res) => {
   const pageSize = 10;
 
   const page = Number(req.query.pageNumber || 1);
@@ -24,9 +23,9 @@ const getProducts = asyncHandler(async (req, res) => {
     page,
     pages: Math.ceil(productCount / pageSize),
   });
-});
+};
 
-const getProductById = asyncHandler(async (req, res) => {
+const getProductById = async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (product) {
@@ -34,9 +33,9 @@ const getProductById = asyncHandler(async (req, res) => {
   } else {
     throw new Error("Product not found");
   }
-});
+};
 
-const deleteProduct = asyncHandler(async (req, res) => {
+const deleteProduct = async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (product) {
@@ -46,9 +45,9 @@ const deleteProduct = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Product not found");
   }
-});
+};
 
-const createProduct = asyncHandler(async (req, res) => {
+const createProduct = async (req, res) => {
   const product = new Product({
     name: "Sample Name",
     price: 0,
@@ -63,18 +62,11 @@ const createProduct = asyncHandler(async (req, res) => {
 
   const createdProduct = await product.save();
   res.status(201).json(createdProduct);
-});
+};
 
-const updateProduct = asyncHandler(async (req, res) => {
-  const {
-    name,
-    price,
-    image,
-    description,
-    brand,
-    category,
-    countInStock,
-  } = req.body;
+const updateProduct = async (req, res) => {
+  const { name, price, image, description, brand, category, countInStock } =
+    req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -93,10 +85,10 @@ const updateProduct = asyncHandler(async (req, res) => {
     res.status(401);
     throw new Error("Product not found");
   }
-});
+};
 
 //  /api/products/:id/reviews
-const createProductReview = asyncHandler(async (req, res) => {
+const createProductReview = async (req, res) => {
   const { rating, comment } = req.body;
 
   const product = await Product.findById(req.params.id);
@@ -131,13 +123,13 @@ const createProductReview = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Product not found");
   }
-});
+};
 
-const getTopProducts = asyncHandler(async (req, res) => {
+const getTopProducts = async (req, res) => {
   const products = await Product.find({}).sort({ rating: -1 }).limit(3);
 
   res.json(products);
-});
+};
 
 export {
   getProductById,

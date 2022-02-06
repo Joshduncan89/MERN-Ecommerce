@@ -1,7 +1,6 @@
-import asyncHandler from "express-async-handler";
 import Order from "../models/orderModel.js";
 
-const addOrderItems = asyncHandler(async (req, res) => {
+const addOrderItems = async (req, res) => {
   const {
     orderItems,
     shippingAddress,
@@ -30,9 +29,9 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
     res.status(201).json(createdOrder);
   }
-});
+};
 
-const getOrderById = asyncHandler(async (req, res) => {
+const getOrderById = async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
     "user",
     "name email"
@@ -44,9 +43,9 @@ const getOrderById = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Order not found");
   }
-});
+};
 
-const updateOrderToPaid = asyncHandler(async (req, res) => {
+const updateOrderToPaid = async (req, res) => {
   const order = await Order.findById(req.params.id);
 
   if (order) {
@@ -65,23 +64,23 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Order not found");
   }
-});
+};
 
 // api/orders/myorders
 
-const getUserOrders = asyncHandler(async (req, res) => {
+const getUserOrders = async (req, res) => {
   const orders = await Order.find({ user: req.user._id });
 
   res.json(orders);
-});
+};
 
-const getAllOrders = asyncHandler(async (req, res) => {
+const getAllOrders = async (req, res) => {
   const orders = await Order.find({}).populate("user", "id name");
 
   res.json(orders);
-});
+};
 
-const markOrderDelivered = asyncHandler(async (req, res) => {
+const markOrderDelivered = async (req, res) => {
   const order = await Order.findById(req.params.id);
 
   if (order) {
@@ -94,7 +93,7 @@ const markOrderDelivered = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Order not found");
   }
-});
+};
 
 export {
   addOrderItems,
